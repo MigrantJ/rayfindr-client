@@ -1,6 +1,6 @@
 function initialize() {
     var mapOptions = {
-        zoom: 6
+        zoom: 10
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
         mapOptions);
@@ -8,8 +8,9 @@ function initialize() {
     // Try HTML5 geolocation
     if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = new google.maps.LatLng(position.coords.latitude,
-                position.coords.longitude);
+            var coordLat = position.coords.latitude;
+            var coordLon = position.coords.longitude;
+            var pos = new google.maps.LatLng(coordLat, coordLon);
 
             var infowindow = new google.maps.InfoWindow({
                 map: map,
@@ -19,6 +20,7 @@ function initialize() {
 
             map.setCenter(pos);
         }, function() {
+            //Geolocation call did not return or errored
             handleNoGeolocation(true);
         });
     } else {
@@ -28,16 +30,18 @@ function initialize() {
 }
 
 function handleNoGeolocation(errorFlag) {
+    var content = '';
     if (errorFlag) {
-        var content = 'Error: The Geolocation service failed.';
+        content = 'Error: The Geolocation service failed.';
         console.log(errorFlag);
     } else {
-        var content = 'Error: Your browser doesn\'t support geolocation.';
+        content = 'Error: Your browser doesn\'t support geolocation.';
     }
 
+    //default location: Bellevue
     var options = {
         map: map,
-        position: new google.maps.LatLng(60, 105),
+        position: new google.maps.LatLng(47.6, -122.2),
         content: content
     };
 
