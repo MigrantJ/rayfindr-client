@@ -1,26 +1,8 @@
 function initialize() {
-    var mapOptions = {
-        zoom: 13
-    };
-    var map = new google.maps.Map(document.getElementById('map-canvas'),
-        mapOptions);
-
-    // Try HTML5 geolocation
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var coordLat = position.coords.latitude;
-            var coordLon = position.coords.longitude;
-            var pos = new google.maps.LatLng(coordLat, coordLon);
-
-            var infowindow = new google.maps.InfoWindow({
-                map: map,
-                position: pos,
-                content: 'Location found using HTML5.'
-            });
-
-            map.setCenter(pos);
-            generateHeatMap(pos, map);
-        }, function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            buildMap([position.coords.latitude, position.coords.longitude]);
+        }, function () {
             //Geolocation call did not return or errored
             handleNoGeolocation(true);
         });
@@ -40,43 +22,17 @@ function handleNoGeolocation(errorFlag) {
     }
 
     //default location: Bellevue
-    var options = {
-        map: map,
-        position: new google.maps.LatLng(47.6, -122.2),
-        content: content
-    };
-
-    var infowindow = new google.maps.InfoWindow(options);
-    map.setCenter(options.position);
+    buildMap([47.6, -122.2]);
 }
 
-function generateHeatMap(pos, map) {
-    var pointArray = new google.maps.MVCArray([pos]);
-    var heatmap = new google.maps.visualization.HeatmapLayer({
-        data: pointArray
-    });
-
-    var gradient = [
-        'rgba(0, 255, 255, 0)',
-        'rgba(0, 255, 255, 1)',
-        'rgba(0, 191, 255, 1)',
-        'rgba(0, 127, 255, 1)',
-        'rgba(0, 63, 255, 1)',
-        'rgba(0, 0, 255, 1)',
-        'rgba(0, 0, 223, 1)',
-        'rgba(0, 0, 191, 1)',
-        'rgba(0, 0, 159, 1)',
-        'rgba(0, 0, 127, 1)',
-        'rgba(63, 0, 91, 1)',
-        'rgba(127, 0, 63, 1)',
-        'rgba(191, 0, 31, 1)',
-        'rgba(255, 0, 0, 1)'
-    ];
-    heatmap.set('gradient', gradient);
-    heatmap.set('radius', 20);
-    heatmap.set('opacity', 0.2);
-
-    heatmap.setMap(map);
+function buildMap(pos) {
+    var map = L.map('map').setView(pos, 16);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18,
+        id: 'migrantj.9344cb99',
+        accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
+    }).addTo(map);
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+initialize();
