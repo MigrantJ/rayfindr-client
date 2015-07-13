@@ -1,8 +1,8 @@
 function initialize() {
     var mapOptions = {
-        zoom: 10
+        zoom: 13
     };
-    map = new google.maps.Map(document.getElementById('map-canvas'),
+    var map = new google.maps.Map(document.getElementById('map-canvas'),
         mapOptions);
 
     // Try HTML5 geolocation
@@ -19,6 +19,7 @@ function initialize() {
             });
 
             map.setCenter(pos);
+            generateHeatMap(pos, map);
         }, function() {
             //Geolocation call did not return or errored
             handleNoGeolocation(true);
@@ -47,6 +48,35 @@ function handleNoGeolocation(errorFlag) {
 
     var infowindow = new google.maps.InfoWindow(options);
     map.setCenter(options.position);
+}
+
+function generateHeatMap(pos, map) {
+    var pointArray = new google.maps.MVCArray([pos]);
+    var heatmap = new google.maps.visualization.HeatmapLayer({
+        data: pointArray
+    });
+
+    var gradient = [
+        'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'
+    ];
+    heatmap.set('gradient', gradient);
+    heatmap.set('radius', 20);
+    heatmap.set('opacity', 0.2);
+
+    heatmap.setMap(map);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
