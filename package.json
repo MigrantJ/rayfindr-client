@@ -1,0 +1,23 @@
+{
+  "name": "rayfindr-client",
+  "version": "1.0.0",
+  "description": "A JavaScript client for the rayfindr API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MigrantJ/rayfindr-client.git"
+  },
+  "author": "Jim Grant",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MigrantJ/rayfindr-client/issues"
+  },
+  "homepage": "https://github.com/MigrantJ/rayfindr-client",
+  "dependencies": {
+    "express": "^4.13.1"
+  }
+}
