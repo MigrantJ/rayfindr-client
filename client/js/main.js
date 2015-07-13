@@ -35,10 +35,10 @@ function buildMap(pos) {
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
     L.marker(pos).addTo(map);
-    doCalls(pos);
+    doCalls(map, pos);
 }
 
-function doCalls(pos) {
+function doCalls(map, pos) {
     var data = {
         lat: pos[0],
         lon: pos[1],
@@ -46,13 +46,23 @@ function doCalls(pos) {
     };
 
     $.ajax({
-        method: "GET",
+        method: "POST",
         url: "http://dev.rayfindr.com/json_test",
-        data: data
+        data: data,
+        //url: "http://localhost:6543/json_test",
     })
     .done(function(response) {
         console.log(response);
+        var points = [[pos[0], pos[1], 500]];
+        buildHeatMap(map, points);
+    })
+    .error(function (response) {
+        console.log(response);
     });
+}
+
+function buildHeatMap(map, data) {
+    L.heatLayer(data, {radius: 20}).addTo(map);
 }
 
 initialize();
