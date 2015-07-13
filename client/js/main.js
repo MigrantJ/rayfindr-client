@@ -62,7 +62,11 @@ function doCalls(map, pos) {
 }
 
 function buildHeatMap(map, data) {
-    L.heatLayer(data, {radius: 20}).addTo(map);
+    L.heatLayer(data, {
+        radius: 20,
+        gradient: {0.5: 'orange', 1: 'yellow'}
+    })
+    .addTo(map);
 }
 
 initialize();
