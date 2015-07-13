@@ -29,10 +29,30 @@ function buildMap(pos) {
     var map = L.map('map').setView(pos, 16);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        minZoom: 14,
         maxZoom: 18,
         id: 'migrantj.9344cb99',
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
+    L.marker(pos).addTo(map);
+    doCalls(pos);
+}
+
+function doCalls(pos) {
+    var data = {
+        lat: pos[0],
+        lon: pos[1],
+        time: 0
+    };
+
+    $.ajax({
+        method: "GET",
+        url: "http://dev.rayfindr.com/json_test",
+        data: data
+    })
+    .done(function(response) {
+        console.log(response);
+    });
 }
 
 initialize();
