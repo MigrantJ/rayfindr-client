@@ -62,25 +62,11 @@ function doCalls(map, pos) {
         var gjson = { "type": "Polygon",
             "coordinates": [
                 [
-                    [pos[1] - 0.001, pos[0] - 0.001],
-                    [pos[1] + 0.001, pos[0] - 0.001],
-                    [pos[1] + 0.001, pos[0] + 0.001],
-                    [pos[1] - 0.001, pos[0] + 0.001],
-                    [pos[1] - 0.001, pos[0] - 0.001]
-                ],
-                [
-                    [pos[1] - 0.00075, pos[0] - 0.00075],
-                    [pos[1] - 0.00050, pos[0] - 0.00075],
-                    [pos[1] - 0.00050, pos[0] - 0.00050],
-                    [pos[1] - 0.00075, pos[0] - 0.00050],
-                    [pos[1] - 0.00075, pos[0] - 0.00075]
-                ],
-                [
-                    [pos[1] + 0.00025, pos[0] + 0.00025],
-                    [pos[1] + 0.00050, pos[0] + 0.00025],
-                    [pos[1] + 0.00050, pos[0] + 0.00050],
-                    [pos[1] + 0.00025, pos[0] + 0.00050],
-                    [pos[1] + 0.00025, pos[0] + 0.00025]
+                    [pos[1] - 0.01, pos[0] - 0.01, 0],
+                    [pos[1] + 0.01, pos[0] - 0.01, 0],
+                    [pos[1] + 0.01, pos[0] + 0.01, 0],
+                    [pos[1] - 0.01, pos[0] + 0.01, 0],
+                    [pos[1] - 0.01, pos[0] - 0.01, 0]
                 ]
             ],
             "properties": {
@@ -88,6 +74,19 @@ function doCalls(map, pos) {
                 "description": "a polygon"
             }
         };
+        //var mult = .0003;
+        //var ox = pos[1];
+        //var oy = pos[0];
+        //for (var y = 0; y < 30; y++) {
+        //    for (var x = 0; x < 30; x++) {
+        //        var triangle = [];
+        //        triangle.push([ox - 0.01 + (x * mult), oy - 0.01 + (y * mult)]);
+        //        triangle.push([ox - 0.01 + (x * mult) + mult, oy - 0.01 + (y * mult)]);
+        //        triangle.push([ox - 0.01 + (x * mult) + mult, oy - 0.01 + (y * mult) + mult]);
+        //        triangle.push([ox - 0.01 + (x * mult), oy - 0.01 + (y * mult)]);
+        //        gjson.coordinates.push(triangle);
+        //    }
+        //}
         //buildHeatMap(map, points);
         buildPoly(map, gjson);
     })
