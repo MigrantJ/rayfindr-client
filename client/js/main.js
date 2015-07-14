@@ -53,8 +53,43 @@ function doCalls(map, pos) {
     })
     .done(function(response) {
         console.log(response);
-        var points = [[pos[0], pos[1], 500]];
-        buildHeatMap(map, points);
+        var points = [
+            [pos[0] - 0.001, pos[1] - 0.001, 100],
+            [pos[0] + 0.001, pos[1] - 0.001, 100],
+            [pos[0] - 0.001, pos[1] + 0.001, 100],
+            [pos[0] + 0.001, pos[1] + 0.001, 100]
+        ];
+        var gjson = { "type": "Polygon",
+            "coordinates": [
+                [
+                    [pos[1] - 0.001, pos[0] - 0.001],
+                    [pos[1] + 0.001, pos[0] - 0.001],
+                    [pos[1] + 0.001, pos[0] + 0.001],
+                    [pos[1] - 0.001, pos[0] + 0.001],
+                    [pos[1] - 0.001, pos[0] - 0.001]
+                ],
+                [
+                    [pos[1] - 0.00075, pos[0] - 0.00075],
+                    [pos[1] - 0.00050, pos[0] - 0.00075],
+                    [pos[1] - 0.00050, pos[0] - 0.00050],
+                    [pos[1] - 0.00075, pos[0] - 0.00050],
+                    [pos[1] - 0.00075, pos[0] - 0.00075]
+                ],
+                [
+                    [pos[1] + 0.00025, pos[0] + 0.00025],
+                    [pos[1] + 0.00050, pos[0] + 0.00025],
+                    [pos[1] + 0.00050, pos[0] + 0.00050],
+                    [pos[1] + 0.00025, pos[0] + 0.00050],
+                    [pos[1] + 0.00025, pos[0] + 0.00025]
+                ]
+            ],
+            "properties": {
+                "color": "red",
+                "description": "a polygon"
+            }
+        };
+        //buildHeatMap(map, points);
+        buildPoly(map, gjson);
     })
     .error(function (response) {
         console.log(response);
@@ -65,6 +100,20 @@ function buildHeatMap(map, data) {
     L.heatLayer(data, {
         radius: 20,
         gradient: {0.5: 'orange', 1: 'yellow'}
+    })
+    .addTo(map);
+}
+
+function buildPoly(map, data) {
+    var style = {
+        "color": "yellow",
+        "weight": 2,
+        "opacity": 1,
+        "fillColor": "yellow",
+        "fillOpacity": 0.5
+    };
+    L.geoJson(data, {
+        style: style
     })
     .addTo(map);
 }
