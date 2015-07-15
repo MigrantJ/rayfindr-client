@@ -52,12 +52,10 @@ function doCalls(map, pos) {
 
     $.ajax({
         method: "POST",
-        url: "http://dev.rayfindr.com/json_test",
+        url: "http://dev.rayfindr.com/api_request",
         data: data,
-        //url: "http://localhost:6543/json_test",
     })
     .done(function(response) {
-        console.log(response);
         var points = [
             [pos[0] - 0.001, pos[1] - 0.001, 100],
             [pos[0] + 0.001, pos[1] - 0.001, 100],
@@ -67,11 +65,11 @@ function doCalls(map, pos) {
         var gjson = { "type": "Polygon",
             "coordinates": [
                 [
-                    [pos[1] - 0.01, pos[0] - 0.01, 0],
-                    [pos[1] + 0.01, pos[0] - 0.01, 0],
-                    [pos[1] + 0.01, pos[0] + 0.01, 0],
-                    [pos[1] - 0.01, pos[0] + 0.01, 0],
-                    [pos[1] - 0.01, pos[0] - 0.01, 0]
+                    [pos[1] - 0.02, pos[0] - 0.02, 0],
+                    [pos[1] + 0.02, pos[0] - 0.02, 0],
+                    [pos[1] + 0.02, pos[0] + 0.02, 0],
+                    [pos[1] - 0.02, pos[0] + 0.02, 0],
+                    [pos[1] - 0.02, pos[0] - 0.02, 0]
                 ]
             ],
             "properties": {
@@ -79,6 +77,7 @@ function doCalls(map, pos) {
                 "description": "a polygon"
             }
         };
+        gjson["coordinates"].push(response["coordinates"]);
         //var mult = .0003;
         //var ox = pos[1];
         //var oy = pos[0];
