@@ -1,8 +1,16 @@
+var map;
+var pos = {
+    lat: null,
+    lon: null
+};
+
 function initialize() {
     initTimeSlider();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-            buildMap([position.coords.latitude, position.coords.longitude]);
+            pos.lat = position.coords.latitude;
+            pos.lon = position.coords.longitude;
+            buildMap();
         }, function () {
             //Geolocation call did not return or errored
             handleNoGeolocation(true);
@@ -41,8 +49,9 @@ function handleNoGeolocation(errorFlag) {
     buildMap([47.6, -122.2]);
 }
 
-function buildMap(pos) {
-    var map = L.map('map').setView(pos, 16);
+function buildMap() {
+    var loc = [pos.lat, pos.lon];
+    map = L.map('map').setView(loc, 16);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         minZoom: 14,
@@ -50,16 +59,16 @@ function buildMap(pos) {
         id: 'migrantj.9344cb99',
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
-    L.marker(pos).addTo(map);
-    doCalls(map, pos);
+    L.marker(loc).addTo(map);
+    ajaxCall();
 }
 
-function doCalls(map, pos) {
+function ajaxCall() {
     var today = new Date();
 
     var data = {
-        lat: pos[0],
-        lon: pos[1],
+        lat: pos.lat,
+        lon: pos.lon,
         year: today.getUTCFullYear(),
         month: today.getUTCMonth(),
         day: today.getUTCDay(),
@@ -69,23 +78,20 @@ function doCalls(map, pos) {
     $.ajax({
         method: "POST",
         url: "http://dev.rayfindr.com/api_request",
-        data: data,
+        //url: "http://localhost:6543/api_request",
+        data: JSON.stringify(data),
+        //dataType: 'json',
+        //contentType: 'application/json'
     })
     .done(function(response) {
-        var points = [
-            [pos[0] - 0.001, pos[1] - 0.001, 100],
-            [pos[0] + 0.001, pos[1] - 0.001, 100],
-            [pos[0] - 0.001, pos[1] + 0.001, 100],
-            [pos[0] + 0.001, pos[1] + 0.001, 100]
-        ];
         var gjson = { "type": "Polygon",
             "coordinates": [
                 [
-                    [pos[1] - 0.02, pos[0] - 0.02, 0],
-                    [pos[1] + 0.02, pos[0] - 0.02, 0],
-                    [pos[1] + 0.02, pos[0] + 0.02, 0],
-                    [pos[1] - 0.02, pos[0] + 0.02, 0],
-                    [pos[1] - 0.02, pos[0] - 0.02, 0]
+                    [pos.lon - 0.02, pos.lat - 0.02, 0],
+                    [pos.lon + 0.02, pos.lat - 0.02, 0],
+                    [pos.lon + 0.02, pos.lat + 0.02, 0],
+                    [pos.lon - 0.02, pos.lat + 0.02, 0],
+                    [pos.lon - 0.02, pos.lat - 0.02, 0]
                 ]
             ],
             "properties": {
@@ -94,7 +100,7 @@ function doCalls(map, pos) {
             }
         };
         gjson["coordinates"].push(response["coordinates"]);
-        buildPoly(map, gjson);
+        buildPoly(gjson);
     })
     .error(function (response) {
         console.log(response);
@@ -109,7 +115,7 @@ function buildHeatMap(map, data) {
     .addTo(map);
 }
 
-function buildPoly(map, data) {
+function buildPoly(data) {
     var style = {
         "color": "yellow",
         "weight": 2,
