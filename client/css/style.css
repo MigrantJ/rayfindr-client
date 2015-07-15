@@ -17,10 +17,10 @@ body {
 /* https://css-tricks.com/perfect-full-page-background-image/ */
 #bg {
     position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: 50%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
     z-index: -1;
 }
 #bg img {
@@ -50,6 +50,10 @@ header h1 {
     height: 400px;
     margin: 0;
     padding: 0;
+}
+
+#time_slider {
+    width: 400px;
 }
 
 @-webkit-keyframes spin {

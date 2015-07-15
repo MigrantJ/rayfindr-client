@@ -1,4 +1,5 @@
 function initialize() {
+    initTimeSlider();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             buildMap([position.coords.latitude, position.coords.longitude]);
@@ -12,11 +13,26 @@ function initialize() {
     }
 }
 
+function initTimeSlider() {
+    var today = new Date();
+    var hours = today.getHours();
+    var slider = $('#time_slider');
+
+    slider.val(hours);
+
+    slider.on('change', function () {
+        var sliderval = $(this).val();
+        var sunheight = (sliderval - 6) * -15 + 50;
+        $('#bg').css({
+            top: sunheight
+        });
+    });
+}
+
 function handleNoGeolocation(errorFlag) {
     var content = '';
     if (errorFlag) {
         content = 'Error: The Geolocation service failed.';
-        console.log(errorFlag);
     } else {
         content = 'Error: Your browser doesn\'t support geolocation.';
     }
@@ -78,20 +94,6 @@ function doCalls(map, pos) {
             }
         };
         gjson["coordinates"].push(response["coordinates"]);
-        //var mult = .0003;
-        //var ox = pos[1];
-        //var oy = pos[0];
-        //for (var y = 0; y < 30; y++) {
-        //    for (var x = 0; x < 30; x++) {
-        //        var triangle = [];
-        //        triangle.push([ox - 0.01 + (x * mult), oy - 0.01 + (y * mult)]);
-        //        triangle.push([ox - 0.01 + (x * mult) + mult, oy - 0.01 + (y * mult)]);
-        //        triangle.push([ox - 0.01 + (x * mult) + mult, oy - 0.01 + (y * mult) + mult]);
-        //        triangle.push([ox - 0.01 + (x * mult), oy - 0.01 + (y * mult)]);
-        //        gjson.coordinates.push(triangle);
-        //    }
-        //}
-        //buildHeatMap(map, points);
         buildPoly(map, gjson);
     })
     .error(function (response) {
