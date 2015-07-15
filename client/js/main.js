@@ -3,6 +3,8 @@ var pos = {
     lat: null,
     lon: null
 };
+var gjLayer;
+var centerMarker;
 
 function initialize() {
     initTimeSlider();
@@ -27,6 +29,7 @@ function initTimeSlider() {
     var slider = $('#time_slider');
 
     slider.val(hours);
+    $('#time_display').text(hours + ':00');
 
     slider.on('change', function () {
         var sliderval = $(this).val();
@@ -34,6 +37,8 @@ function initTimeSlider() {
         $('#bg').css({
             top: sunheight
         });
+        $('#time_display').text(sliderval + ':00');
+        ajaxCall(sliderval);
     });
 }
 
@@ -60,24 +65,37 @@ function buildMap() {
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
     L.marker(loc).addTo(map);
+    addMapEvents();
     ajaxCall();
 }
 
-function ajaxCall() {
+function addMapEvents() {
+    map.on('mouseup', function () {
+        var center = map.getCenter();
+        //L.marker(center).addTo(map);
+        //ajaxCall(center.lat, center.lon);
+    });
+}
+
+function ajaxCall(lat, lon, hour) {
     var today = new Date();
+    lat = lat || pos.lat;
+    lon = lon || pos.lon;
+    hour = hour || today.getUTCHours();
 
     var data = {
-        lat: pos.lat,
-        lon: pos.lon,
+        lat: lat,
+        lon: lon,
         year: today.getUTCFullYear(),
         month: today.getUTCMonth(),
         day: today.getUTCDay(),
-        hour: today.getUTCHours()
+        hour: hour
     };
 
     $.ajax({
         method: "POST",
         url: "http://dev.rayfindr.com/api_request",
+        //url: "http://dev.rayfindr.com/json_test",
         //url: "http://localhost:6543/api_request",
         data: JSON.stringify(data),
         //dataType: 'json',
@@ -87,11 +105,11 @@ function ajaxCall() {
         var gjson = { "type": "Polygon",
             "coordinates": [
                 [
-                    [pos.lon - 0.02, pos.lat - 0.02, 0],
-                    [pos.lon + 0.02, pos.lat - 0.02, 0],
-                    [pos.lon + 0.02, pos.lat + 0.02, 0],
-                    [pos.lon - 0.02, pos.lat + 0.02, 0],
-                    [pos.lon - 0.02, pos.lat - 0.02, 0]
+                    [lon - 0.02, lat - 0.02, 0],
+                    [lon + 0.02, lat - 0.02, 0],
+                    [lon + 0.02, lat + 0.02, 0],
+                    [lon - 0.02, lat + 0.02, 0],
+                    [lon - 0.02, lat - 0.02, 0]
                 ]
             ],
             "properties": {
@@ -116,17 +134,24 @@ function buildHeatMap(map, data) {
 }
 
 function buildPoly(data) {
-    var style = {
-        "color": "yellow",
-        "weight": 2,
-        "opacity": 1,
-        "fillColor": "yellow",
-        "fillOpacity": 0.5
-    };
-    L.geoJson(data, {
-        style: style
-    })
-    .addTo(map);
+    if (!!gjLayer) {
+        //gjLayer.removeFrom(map);
+        console.log(map.hasLayer(gjLayer));
+        //map.removeLayer(gjLayer);
+        //console.log('removing');
+    } else {
+        var style = {
+            "color": "yellow",
+            "weight": 2,
+            "opacity": 1,
+            "fillColor": "yellow",
+            "fillOpacity": 0.5
+        };
+        gjLayer = L.geoJson(data, {
+            style: style
+        });
+        gjLayer.addTo(map);
+    }
 }
 
 initialize();
