@@ -1,5 +1,70 @@
-html, body, #map {
-    height: 100%;
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+@font-face {
+    font-family: "Open Sans";
+}
+
+body {
     margin: 0;
     padding: 0;
+    border: 0;
+    background-color: yellow;
+    font-family: "Open Sans", sans-serif;
+    height: 100%;
+}
+
+/* Reference */
+/* https://css-tricks.com/perfect-full-page-background-image/ */
+#bg {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1;
+}
+#bg img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    min-width: 50%;
+    min-height: 50%;
+    -webkit-animation: spin 40s infinite linear;
+    -moz-animation: spin 40s infinite linear;
+    -o-animation: spin 40s infinite linear;
+    -ms-animation: spin 40s infinite linear;
+}
+#container {
+    z-index: 1;
+}
+
+header h1 {
+    font-size: 3em;
+    text-align: center;
+}
+
+#map {
+    height: 400px;
+    margin: 0;
+    padding: 0;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg);}
+    100% { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes spin {
+    0% { -moz-transform: rotate(0deg);}
+    100% { -moz-transform: rotate(360deg);}
+}
+@-o-keyframes spin {
+    0% { -o-transform: rotate(0deg);}
+    100% { -o-transform: rotate(360deg);}
+}
+@-ms-keyframes spin {
+    0% { -ms-transform: rotate(0deg);}
+    100% { -ms-transform: rotate(360deg);}
 }

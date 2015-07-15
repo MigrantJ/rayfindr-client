@@ -39,10 +39,15 @@ function buildMap(pos) {
 }
 
 function doCalls(map, pos) {
+    var today = new Date();
+
     var data = {
         lat: pos[0],
         lon: pos[1],
-        time: 0
+        year: today.getUTCFullYear(),
+        month: today.getUTCMonth(),
+        day: today.getUTCDay(),
+        hour: today.getUTCHours()
     };
 
     $.ajax({
