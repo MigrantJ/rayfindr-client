@@ -110,19 +110,29 @@ function ajaxCall(lat, lon, hour) {
                     [lon + 0.02, lat + 0.02, 0],
                     [lon - 0.02, lat + 0.02, 0],
                     [lon - 0.02, lat - 0.02, 0]
-                ],
-                //[
-                //    [lon - 0.0001, lat - 0.0001, 0],
-                //    [lon + 0.0001, lat - 0.0001, 0],
-                //    [lon + 0.0001, lat + 0.0001, 0],
-                //    [lon - 0.0001, lat + 0.0001, 0],
-                //    [lon - 0.0001, lat - 0.0001, 0]
-                //]
+                ]
             ]
         };
-        for (var i in response["coordinates"]) {
-            gjson["coordinates"].push(response["coordinates"][i]);
-        }
+
+        var merged = turf.merge(response);
+        console.log(response);
+        console.log(merged);
+        gjson = turf.erase(gjson, merged);
+        console.log(gjson);
+
+
+        //for (var i in response["coordinates"]) {
+            //var pointArray = response["coordinates"][i];
+            //var bldgGJ = {
+            //    type: "Polygon",
+            //    coordinates: [
+            //        pointArray
+            //    ]
+            //};
+            //gjson = turf.erase(gjson, bldgGJ);
+
+            //gjson["coordinates"].push(response["coordinates"][i]);
+        //}
         buildPoly(gjson);
     })
     .error(function (response) {
@@ -147,7 +157,8 @@ function buildPoly(data) {
         "weight": 2,
         "opacity": 1,
         "fillColor": "yellow",
-        "fillOpacity": 0.5
+        "fillOpacity": 0.5,
+        "fill": true
     };
     gjLayer = L.geoJson(data, {
         style: style
