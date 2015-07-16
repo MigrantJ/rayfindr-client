@@ -23,22 +23,35 @@ function initialize() {
 }
 
 function initTimeSlider() {
-    var slider = $('#time_slider');
-
-    slider.val(day.hours() * 60 + day.minutes());
-    $('#time_display').text(day.format("h:mm A"));
-
-    slider.on('change', function () {
-        var sliderval = $(this).val();
-        var sunheight = (sliderval - 6) * -15 + 50;
-        $('#bg').css({
-            top: sunheight
-        });
-        $('#time_display').text(sliderval + ':00');
-        day.setHours(parseInt(sliderval));
-        var utchours = day.getUTCHours();
-        ajaxCall(null, null, parseInt(utchours));
+    $('#slider').slider({
+        min: 0,
+        max: 1339,
+        value: day.hours() * 60 + day.minutes(),
+        change: sliderOnChange,
+        slide: sliderOnSlide
     });
+
+    $('#time_display').text(day.format("h:mm A"));
+}
+
+function sliderOnChange(event, ui) {
+    ajaxCall();
+}
+
+function sliderOnSlide(event, ui) {
+    updateDay(ui.value);
+    $('#time_display').text(day.format("h:mm A"));
+    var sunheight = (day.hours() - 6) * -15 + 50;
+    $('#bg').css({
+        top: sunheight
+    });
+}
+
+function updateDay(mins) {
+    var hours = Math.min(mins / 60);
+    var realmins = mins % 60;
+    day.hours(hours);
+    day.minutes(realmins);
 }
 
 function handleNoGeolocation(errorFlag) {
@@ -75,20 +88,19 @@ function addMapEvents() {
     });
 }
 
-function ajaxCall(lat, lon, hour) {
-    var today = new Date();
+function ajaxCall(lat, lon) {
     lat = lat || pos.lat;
     lon = lon || pos.lon;
-    hour = hour || today.getUTCHours();
     var bounds = map.getBounds();
 
     var data = {
         lat: lat,
         lon: lon,
-        year: today.getUTCFullYear(),
-        month: today.getUTCMonth(),
-        day: today.getUTCDay(),
-        hour: hour,
+        year: day.utc().year(),
+        month: day.utc().month(),
+        day: day.utc().day(),
+        hour: day.utc().hour(),
+        minute: day.utc().minute(),
         boundLatMin: bounds.getSouth(),
         boundLatMax: bounds.getNorth(),
         boundLonMin: bounds.getWest(),
