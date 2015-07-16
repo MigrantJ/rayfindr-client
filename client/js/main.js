@@ -81,6 +81,7 @@ function ajaxCall(lat, lon, hour) {
     lat = lat || pos.lat;
     lon = lon || pos.lon;
     hour = hour || today.getUTCHours();
+    var bounds = map.getBounds();
 
     var data = {
         lat: lat,
@@ -88,7 +89,11 @@ function ajaxCall(lat, lon, hour) {
         year: today.getUTCFullYear(),
         month: today.getUTCMonth(),
         day: today.getUTCDay(),
-        hour: hour
+        hour: hour,
+        boundLatMin: bounds.getSouth(),
+        boundLatMax: bounds.getNorth(),
+        boundLonMin: bounds.getWest(),
+        boundLonMax: bounds.getEast()
     };
 
     showMsg('Loading From Server...');
@@ -102,35 +107,38 @@ function ajaxCall(lat, lon, hour) {
     .done(function(response) {
         if (response !== {}) {
             showMsg('Generating Shadows...');
-            var gjson = {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [lon - 0.02, lat - 0.02, 0],
-                        [lon + 0.02, lat - 0.02, 0],
-                        [lon + 0.02, lat + 0.02, 0],
-                        [lon - 0.02, lat + 0.02, 0],
-                        [lon - 0.02, lat - 0.02, 0]
+            setTimeout(function() {
+                var gjson = {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [lon - 0.02, lat - 0.02, 0],
+                            [lon + 0.02, lat - 0.02, 0],
+                            [lon + 0.02, lat + 0.02, 0],
+                            [lon - 0.02, lat + 0.02, 0],
+                            [lon - 0.02, lat - 0.02, 0]
+                        ]
                     ]
-                ]
-            };
+                };
 
-            var merged = turf.merge(response);
-            gjson = turf.erase(gjson, merged);
+                var merged = turf.merge(response);
+                gjson = turf.erase(gjson, merged);
 
-            //for (var i in response["coordinates"]) {
-            //var pointArray = response["coordinates"][i];
-            //var bldgGJ = {
-            //    type: "Polygon",
-            //    coordinates: [
-            //        pointArray
-            //    ]
-            //};
-            //gjson = turf.erase(gjson, bldgGJ);
+                //for (var i in response["coordinates"]) {
+                //var pointArray = response["coordinates"][i];
+                //var bldgGJ = {
+                //    type: "Polygon",
+                //    coordinates: [
+                //        pointArray
+                //    ]
+                //};
+                //gjson = turf.erase(gjson, bldgGJ);
 
-            //gjson["coordinates"].push(response["coordinates"][i]);
-            //}
-            buildPoly(gjson);
+                //gjson["coordinates"].push(response["coordinates"][i]);
+                //}
+                buildPoly(gjson);
+                showMsg('Done!');
+            }, 50);
         } else {
 
         }
