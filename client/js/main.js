@@ -25,7 +25,7 @@ function initialize() {
 function initTimeSlider() {
     $('#slider').slider({
         min: 0,
-        max: 1339,
+        max: 1439,
         value: day.hours() * 60 + day.minutes(),
         change: sliderOnChange,
         slide: sliderOnSlide
@@ -68,11 +68,11 @@ function handleNoGeolocation(errorFlag) {
 
 function buildMap() {
     var loc = [pos.lat, pos.lon];
-    map = L.map('map').setView(loc, 16);
+    map = L.map('map').setView(loc, 18);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        minZoom: 14,
-        maxZoom: 18,
+        minZoom: 17,
+        maxZoom: 19,
         id: 'migrantj.9344cb99',
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
@@ -135,20 +135,16 @@ function ajaxCall(lat, lon) {
                 //var merged = turf.merge(response);
                 //gjson = turf.erase(gjson, merged);
 
-                //for (var i in response["coordinates"]) {
-                //var pointArray = response["coordinates"][i];
-                //var bldgGJ = {
-                //    type: "Polygon",
-                //    coordinates: [
-                //        pointArray
-                //    ]
-                //};
-                //gjson = turf.erase(gjson, bldgGJ);
-
-                //gjson["coordinates"].push(response["coordinates"][i]);
-                //}
-
-                gjson["coordinates"].push(response["coordinates"][0]);
+                if (response["type"] === "Polygon") {
+                    gjson["coordinates"].push(response["coordinates"][0]);
+                } else
+                if (response["type"] === "MultiPolygon") {
+                    for (var i in response["coordinates"]) {
+                        for (var j in response["coordinates"][i]) {
+                            gjson["coordinates"].push(response["coordinates"][i][j]);
+                        }
+                    }
+                }
 
                 buildPoly(gjson);
                 showMsg('Done!');
