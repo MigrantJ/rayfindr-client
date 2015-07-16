@@ -10,6 +10,8 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
     <script src="js/leaflet-heat.js"></script>
     <script src="js/turf.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
 </head>
 <body>
 <div id="bg">
@@ -24,7 +26,7 @@
     </div>
     <div id="time_control">
         <h2>FLUX CAPACITOR</h2>
-        <input type="range" name="time_slider" id="time_slider" min="0" max="23">
+        <div id="slider"></div>
         <h3 id="time_display"></h3>
     </div>
     <div id="map"></div>
