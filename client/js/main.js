@@ -144,9 +144,7 @@ function ajaxCall(lat, lon) {
                 } else
                 if (response["type"] === "MultiPolygon") {
                     for (var i in response["coordinates"]) {
-                        for (var j in response["coordinates"][i]) {
-                            gjson["coordinates"].push(response["coordinates"][i][j]);
-                        }
+                        gjson["coordinates"].push(response["coordinates"][i][0]);
                     }
                 }
 
