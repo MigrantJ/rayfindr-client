@@ -120,7 +120,10 @@ function ajaxCall(lat, lon) {
         data: JSON.stringify(data),
     })
     .done(function(response) {
-        if (response !== {}) {
+        if (!!gjLayer) {
+            map.removeLayer(gjLayer);
+        }
+        if (response.hasOwnProperty("type")) {
             showMsg('Generating Shadows...');
             setTimeout(function() {
                 var gjson = {
@@ -135,9 +138,6 @@ function ajaxCall(lat, lon) {
                         ]
                     ]
                 };
-
-                //var merged = turf.merge(response);
-                //gjson = turf.erase(gjson, merged);
 
                 if (response["type"] === "Polygon") {
                     gjson["coordinates"].push(response["coordinates"][0]);
@@ -154,7 +154,7 @@ function ajaxCall(lat, lon) {
                 showMsg('Done!');
             }, 50);
         } else {
-
+            showMsg("It's Night Time! No Sun Found!");
         }
     })
     .error(function (response) {
@@ -171,9 +171,6 @@ function buildHeatMap(map, data) {
 }
 
 function buildPoly(data) {
-    if (!!gjLayer) {
-        map.removeLayer(gjLayer);
-    }
     var style = {
         "color": "yellow",
         "weight": 2,
