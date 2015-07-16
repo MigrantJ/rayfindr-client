@@ -31,7 +31,7 @@ function initTimeSlider() {
         slide: sliderOnSlide
     });
 
-    $('#time_display').text(day.format("h:mm A"));
+    //$('#time_display').text(day.format("h:mm A"));
 }
 
 function sliderOnChange(event, ui) {
@@ -59,11 +59,11 @@ function handleNoGeolocation(errorFlag) {
     if (errorFlag) {
         showMsg('Error: The Geolocation service failed.', true);
     } else {
-        showMsg('Error: Your browser doesn\'t support geolocation.');
+        showMsg('Error: Your browser doesn\'t support geolocation.', true);
     }
 
-    //default location: Bellevue
-    buildMap([47.6, -122.2]);
+    //default location: Code Fellows
+    buildMap([47.6235, -122.3360]);
 }
 
 function buildMap() {
@@ -71,8 +71,8 @@ function buildMap() {
     map = L.map('map').setView(loc, 18);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        minZoom: 17,
-        maxZoom: 19,
+        minZoom: 18,
+        maxZoom: 18,
         id: 'migrantj.9344cb99',
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
