@@ -5,6 +5,7 @@ var pos = {
 };
 
 function initialize() {
+    day = moment();
     initTimeSlider();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
@@ -22,12 +23,10 @@ function initialize() {
 }
 
 function initTimeSlider() {
-    day = new Date();
-    var hours = day.getHours();
     var slider = $('#time_slider');
 
-    slider.val(hours);
-    $('#time_display').text(hours + ':00');
+    slider.val(day.hours() * 60 + day.minutes());
+    $('#time_display').text(day.format("h:mm A"));
 
     slider.on('change', function () {
         var sliderval = $(this).val();
@@ -121,8 +120,8 @@ function ajaxCall(lat, lon, hour) {
                     ]
                 };
 
-                var merged = turf.merge(response);
-                gjson = turf.erase(gjson, merged);
+                //var merged = turf.merge(response);
+                //gjson = turf.erase(gjson, merged);
 
                 //for (var i in response["coordinates"]) {
                 //var pointArray = response["coordinates"][i];
@@ -136,6 +135,9 @@ function ajaxCall(lat, lon, hour) {
 
                 //gjson["coordinates"].push(response["coordinates"][i]);
                 //}
+
+                gjson["coordinates"].push(response["coordinates"][0]);
+
                 buildPoly(gjson);
                 showMsg('Done!');
             }, 50);
