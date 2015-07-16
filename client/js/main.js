@@ -38,7 +38,7 @@ function initTimeSlider() {
             top: sunheight
         });
         $('#time_display').text(sliderval + ':00');
-        ajaxCall(sliderval);
+        ajaxCall(null, null, parseInt(sliderval));
     });
 }
 
@@ -110,14 +110,19 @@ function ajaxCall(lat, lon, hour) {
                     [lon + 0.02, lat + 0.02, 0],
                     [lon - 0.02, lat + 0.02, 0],
                     [lon - 0.02, lat - 0.02, 0]
-                ]
-            ],
-            "properties": {
-                "color": "red",
-                "description": "a polygon"
-            }
+                ],
+                //[
+                //    [lon - 0.0001, lat - 0.0001, 0],
+                //    [lon + 0.0001, lat - 0.0001, 0],
+                //    [lon + 0.0001, lat + 0.0001, 0],
+                //    [lon - 0.0001, lat + 0.0001, 0],
+                //    [lon - 0.0001, lat - 0.0001, 0]
+                //]
+            ]
         };
-        gjson["coordinates"].push(response["coordinates"]);
+        for (var i in response["coordinates"]) {
+            gjson["coordinates"].push(response["coordinates"][i]);
+        }
         buildPoly(gjson);
     })
     .error(function (response) {
@@ -135,23 +140,19 @@ function buildHeatMap(map, data) {
 
 function buildPoly(data) {
     if (!!gjLayer) {
-        //gjLayer.removeFrom(map);
-        console.log(map.hasLayer(gjLayer));
-        //map.removeLayer(gjLayer);
-        //console.log('removing');
-    } else {
-        var style = {
-            "color": "yellow",
-            "weight": 2,
-            "opacity": 1,
-            "fillColor": "yellow",
-            "fillOpacity": 0.5
-        };
-        gjLayer = L.geoJson(data, {
-            style: style
-        });
-        gjLayer.addTo(map);
+        map.removeLayer(gjLayer);
     }
+    var style = {
+        "color": "yellow",
+        "weight": 2,
+        "opacity": 1,
+        "fillColor": "yellow",
+        "fillOpacity": 0.5
+    };
+    gjLayer = L.geoJson(data, {
+        style: style
+    });
+    gjLayer.addTo(map);
 }
 
 initialize();
