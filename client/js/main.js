@@ -45,9 +45,9 @@ function initTimeSlider() {
 function handleNoGeolocation(errorFlag) {
     var content = '';
     if (errorFlag) {
-        content = 'Error: The Geolocation service failed.';
+        showMsg('Error: The Geolocation service failed.', true);
     } else {
-        content = 'Error: Your browser doesn\'t support geolocation.';
+        showMsg('Error: Your browser doesn\'t support geolocation.');
     }
 
     //default location: Bellevue
@@ -72,8 +72,7 @@ function buildMap() {
 function addMapEvents() {
     map.on('mouseup', function () {
         var center = map.getCenter();
-        //L.marker(center).addTo(map);
-        //ajaxCall(center.lat, center.lon);
+        ajaxCall(center.lat, center.lng);
     });
 }
 
@@ -92,36 +91,34 @@ function ajaxCall(lat, lon, hour) {
         hour: hour
     };
 
+    showMsg('Loading From Server...');
+
     $.ajax({
         method: "POST",
         url: "http://dev.rayfindr.com/api_request",
-        //url: "http://dev.rayfindr.com/json_test",
         //url: "http://localhost:6543/api_request",
         data: JSON.stringify(data),
-        //dataType: 'json',
-        //contentType: 'application/json'
     })
     .done(function(response) {
-        var gjson = { "type": "Polygon",
-            "coordinates": [
-                [
-                    [lon - 0.02, lat - 0.02, 0],
-                    [lon + 0.02, lat - 0.02, 0],
-                    [lon + 0.02, lat + 0.02, 0],
-                    [lon - 0.02, lat + 0.02, 0],
-                    [lon - 0.02, lat - 0.02, 0]
+        if (response !== {}) {
+            showMsg('Generating Shadows...');
+            var gjson = {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [lon - 0.02, lat - 0.02, 0],
+                        [lon + 0.02, lat - 0.02, 0],
+                        [lon + 0.02, lat + 0.02, 0],
+                        [lon - 0.02, lat + 0.02, 0],
+                        [lon - 0.02, lat - 0.02, 0]
+                    ]
                 ]
-            ]
-        };
+            };
 
-        var merged = turf.merge(response);
-        console.log(response);
-        console.log(merged);
-        gjson = turf.erase(gjson, merged);
-        console.log(gjson);
+            var merged = turf.merge(response);
+            gjson = turf.erase(gjson, merged);
 
-
-        //for (var i in response["coordinates"]) {
+            //for (var i in response["coordinates"]) {
             //var pointArray = response["coordinates"][i];
             //var bldgGJ = {
             //    type: "Polygon",
@@ -132,8 +129,11 @@ function ajaxCall(lat, lon, hour) {
             //gjson = turf.erase(gjson, bldgGJ);
 
             //gjson["coordinates"].push(response["coordinates"][i]);
-        //}
-        buildPoly(gjson);
+            //}
+            buildPoly(gjson);
+        } else {
+
+        }
     })
     .error(function (response) {
         console.log(response);
@@ -164,6 +164,22 @@ function buildPoly(data) {
         style: style
     });
     gjLayer.addTo(map);
+}
+
+function showMsg(text, isError) {
+    var e = $('#message_text');
+    e.show();
+    e.text(text);
+    if (isError) {
+        e.addClass('error');
+    } else {
+        e.removeClass('error');
+    }
+}
+
+function hideMsg() {
+    var e = $('#message_text');
+    e.hide();
 }
 
 initialize();
