@@ -1,10 +1,8 @@
-var map;
+var map, gjLayer, centerMarker, day;
 var pos = {
     lat: null,
     lon: null
 };
-var gjLayer;
-var centerMarker;
 
 function initialize() {
     initTimeSlider();
@@ -24,8 +22,8 @@ function initialize() {
 }
 
 function initTimeSlider() {
-    var today = new Date();
-    var hours = today.getHours();
+    day = new Date();
+    var hours = day.getHours();
     var slider = $('#time_slider');
 
     slider.val(hours);
@@ -38,7 +36,9 @@ function initTimeSlider() {
             top: sunheight
         });
         $('#time_display').text(sliderval + ':00');
-        ajaxCall(null, null, parseInt(sliderval));
+        day.setHours(parseInt(sliderval));
+        var utchours = day.getUTCHours();
+        ajaxCall(null, null, parseInt(utchours));
     });
 }
 
