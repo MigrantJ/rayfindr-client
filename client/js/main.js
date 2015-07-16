@@ -93,19 +93,23 @@ function ajaxCall(lat, lon) {
     lon = lon || pos.lon;
     var bounds = map.getBounds();
 
+    day.utc();
+
     var data = {
         lat: lat,
         lon: lon,
-        year: day.utc().year(),
-        month: day.utc().month(),
-        day: day.utc().day(),
-        hour: day.utc().hour(),
-        minute: day.utc().minute(),
+        year: day.year(),
+        month: day.month(),
+        day: day.day(),
+        hour: day.hour(),
+        minute: day.minute(),
         boundLatMin: bounds.getSouth(),
         boundLatMax: bounds.getNorth(),
         boundLonMin: bounds.getWest(),
         boundLonMax: bounds.getEast()
     };
+
+    day.local();
 
     showMsg('Loading From Server...');
 

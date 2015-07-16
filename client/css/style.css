@@ -53,6 +53,7 @@ header h1 {
 }
 
 #slider {
+    margin: 0 auto;
     width: 400px;
 }
 
