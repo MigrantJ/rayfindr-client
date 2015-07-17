@@ -1,8 +1,9 @@
-var map, gjLayer, centerMarker, day;
+var map, gjLayer, timer, day;
 var pos = {
     lat: null,
     lon: null
 };
+var MAP_PAN_WAIT = 1000;
 
 function initialize() {
     day = moment();
@@ -35,7 +36,7 @@ function initTimeSlider() {
 }
 
 function sliderOnChange(event, ui) {
-    ajaxCall();
+    callDelay();
 }
 
 function sliderOnSlide(event, ui) {
@@ -91,15 +92,24 @@ function buildMap() {
 
 function addMapEvents() {
     map.on('moveend', function () {
-        var center = map.getCenter();
-        ajaxCall(center.lat, center.lng);
+        callDelay();
     });
 }
 
-function ajaxCall(lat, lon) {
-    lat = lat || pos.lat;
-    lon = lon || pos.lon;
+function callDelay() {
+    if (timer) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function () {
+        ajaxCall();
+    }, MAP_PAN_WAIT);
+}
+
+function ajaxCall() {
     var bounds = map.getBounds();
+    var center = map.getCenter();
+    var lat = center.lat;
+    var lon = center.lng;
 
     day.utc();
 
