@@ -181,6 +181,7 @@ function ajaxCall() {
             } else {
                 showMsg("Unknown Error. Try Refreshing!", true);
             }
+            loading = false;
         }
     })
     .error(function (response) {
