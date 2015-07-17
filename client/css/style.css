@@ -42,30 +42,53 @@ body {
     z-index: 1;
 }
 
-header h1 {
-    font-size: 3em;
-    padding: 0;
-    margin: 0;
-}
-
-#time_display {
-    padding: 0;
-    margin: 0;
-}
-
-#message_text {
-    padding: 0;
-    margin: 0;
-}
 
 @media (max-width: 600px) {
+    header h1 {
+        font-size: 1em;
+        padding: 0;
+        margin: 0;
+    }
+
+    #time_display {
+        font-size: 0.5em;
+        padding: 0;
+        margin: 0;
+    }
+
+    #message_text {
+        font-size: 0.5em;
+        padding: 0;
+        margin: 0;
+    }
+
     #map {
-        height: 200px;
+        height: 300px;
         margin: 0;
         padding: 0;
     }
+
+    footer {
+        font-size: 0.5em;
+    }
 }
 @media (min-width: 600px) {
+    header h1 {
+        font-size: 3em;
+        padding: 0;
+        margin: 0;
+    }
+
+    #time_display {
+        padding: 0;
+        margin: 0;
+    }
+
+    #message_text {
+        padding: 0;
+        margin: 0;
+    }
+
     #map {
         height: 500px;
         margin: 0;
