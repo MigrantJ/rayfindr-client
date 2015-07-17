@@ -69,11 +69,18 @@ function handleNoGeolocation(errorFlag) {
 }
 
 function buildMap() {
-    var loc = [pos.lat, pos.lon];
+    var loc = L.latLng(pos.lat, pos.lon);
+    var bounds = L.latLngBounds(L.latLng(47.4462, -122.4516), L.latLng(47.7331, -122.2148));
+
+    // default to Code Fellows if user loc not in city limits
+    if (!bounds.contains(loc)) {
+        loc = L.latLng(47.6235, -122.3360);
+    }
+
     map = L.map('map', {
         center: loc,
         zoom: 18,
-        maxBounds: L.latLngBounds(L.latLng(47.4462, -122.4516), L.latLng(47.7331, -122.2148)),
+        maxBounds: bounds,
         zoomControl: false,
         touchZoom: false,
         scrollWheelZoom: false,
