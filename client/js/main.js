@@ -4,6 +4,7 @@ var pos = {
     lon: null
 };
 var MAP_PAN_WAIT = 1000;
+var loading = false;
 
 function initialize() {
     day = moment();
@@ -97,15 +98,19 @@ function addMapEvents() {
 }
 
 function callDelay() {
-    if (timer) {
-        clearTimeout(timer);
+    if (!loading) {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        timer = setTimeout(function () {
+            ajaxCall();
+        }, MAP_PAN_WAIT);
     }
-    timer = setTimeout(function () {
-        ajaxCall();
-    }, MAP_PAN_WAIT);
 }
 
 function ajaxCall() {
+    loading = true;
     var bounds = map.getBounds();
     var center = map.getCenter();
     var lat = center.lat;
@@ -167,6 +172,7 @@ function ajaxCall() {
 
                 buildPoly(gjson);
                 showMsg('Done!');
+                loading = false;
             }, 50);
         } else
         if (response.hasOwnProperty("error")) {
