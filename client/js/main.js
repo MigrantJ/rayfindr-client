@@ -31,7 +31,7 @@ function initTimeSlider() {
         slide: sliderOnSlide
     });
 
-    //$('#time_display').text(day.format("h:mm A"));
+    $('#time_display').text(day.format("h:mm A"));
 }
 
 function sliderOnChange(event, ui) {
@@ -68,21 +68,29 @@ function handleNoGeolocation(errorFlag) {
 
 function buildMap() {
     var loc = [pos.lat, pos.lon];
-    map = L.map('map').setView(loc, 18);
+    map = L.map('map', {
+        center: loc,
+        zoom: 18,
+        maxBounds: L.latLngBounds(L.latLng(47.4462, -122.4516), L.latLng(47.7331, -122.2148)),
+        zoomControl: false,
+        touchZoom: false,
+        scrollWheelZoom: false,
+        boxZoom: false
+    });
+
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        minZoom: 18,
-        maxZoom: 18,
         id: 'migrantj.9344cb99',
         accessToken: 'pk.eyJ1IjoibWlncmFudGoiLCJhIjoiNmI3NjUwMmJkZjVlYTljYzRkMThhMDU4OWQ3NDI4MWIifQ.3of6hXIWW1bSWC4eqKAvQQ'
     }).addTo(map);
+
     L.marker(loc).addTo(map);
     addMapEvents();
     ajaxCall();
 }
 
 function addMapEvents() {
-    map.on('mouseup', function () {
+    map.on('moveend', function () {
         var center = map.getCenter();
         ajaxCall(center.lat, center.lng);
     });
@@ -130,19 +138,18 @@ function ajaxCall(lat, lon) {
                     "type": "Polygon",
                     "coordinates": [
                         [
-                            [lon - 0.02, lat - 0.02, 0],
-                            [lon + 0.02, lat - 0.02, 0],
-                            [lon + 0.02, lat + 0.02, 0],
-                            [lon - 0.02, lat + 0.02, 0],
-                            [lon - 0.02, lat - 0.02, 0]
+                            [lon - 0.005, lat - 0.005, 0],
+                            [lon + 0.005, lat - 0.005, 0],
+                            [lon + 0.005, lat + 0.005, 0],
+                            [lon - 0.005, lat + 0.005, 0],
+                            [lon - 0.005, lat - 0.005, 0]
                         ]
                     ]
                 };
 
                 if (response["type"] === "Polygon") {
                     gjson["coordinates"].push(response["coordinates"][0]);
-                } else
-                if (response["type"] === "MultiPolygon") {
+                } else if (response["type"] === "MultiPolygon") {
                     for (var i in response["coordinates"]) {
                         gjson["coordinates"].push(response["coordinates"][i][0]);
                     }
@@ -151,8 +158,13 @@ function ajaxCall(lat, lon) {
                 buildPoly(gjson);
                 showMsg('Done!');
             }, 50);
-        } else {
-            showMsg("It's Night Time! No Sun Found!");
+        } else
+        if (response.hasOwnProperty("error")) {
+            if (response["error"] === "night") {
+                showMsg("It's Night Time! No Sun Found!");
+            } else {
+                showMsg("Unknown Error. Try Refreshing!", true);
+            }
         }
     })
     .error(function (response) {
