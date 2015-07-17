@@ -43,10 +43,10 @@ function sliderOnChange(event, ui) {
 function sliderOnSlide(event, ui) {
     updateDay(ui.value);
     $('#time_display').text(day.format("h:mm A"));
-    var sunheight = (day.hours() - 6) * -15 + 50;
-    $('#bg').css({
-        top: sunheight
-    });
+    //var sunheight = (day.hours() - 6) * -15 + 50;
+    //$('#bg').css({
+    //    top: sunheight
+    //});
 }
 
 function updateDay(mins) {
