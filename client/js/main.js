@@ -25,15 +25,17 @@ function initialize() {
 }
 
 function initTimeSlider() {
+    var mins = day.hours() * 60 + day.minutes()
     $('#slider').slider({
         min: 0,
         max: 1439,
-        value: day.hours() * 60 + day.minutes(),
+        value: mins,
         change: sliderOnChange,
         slide: sliderOnSlide
     });
 
     $('#time_display').text(day.format("h:mm A"));
+    changeBG(mins);
 }
 
 function sliderOnChange(event, ui) {
@@ -43,10 +45,26 @@ function sliderOnChange(event, ui) {
 function sliderOnSlide(event, ui) {
     updateDay(ui.value);
     $('#time_display').text(day.format("h:mm A"));
-    var sunheight = (day.hours() - 6) * -15 + 50;
+    changeBG(ui.value);
+}
+
+function changeBG(mins) {
+    var sunheight;
+    if (mins > 360 && mins < 720) {
+        sunheight = (mins - 720) * -0.41 - 50;
+    } else if (ui.value >= 720 && ui.value < 1200) {
+        sunheight = (ui.value - 720) * 0.3125 - 50;
+    } else {
+        sunheight = 100;
+    }
+    var sunopacity = (sunheight * -.01) + 1;
+
     $('#bg').css({
-        top: sunheight
+        top: sunheight + '%',
+        opacity: sunopacity
     });
+
+    $('body').removeClass().addClass('bg-' + day.hour());
 }
 
 function updateDay(mins) {

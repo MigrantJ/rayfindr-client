@@ -38,6 +38,51 @@ body {
     -o-animation: spin 40s infinite linear;
     -ms-animation: spin 40s infinite linear;
 }
+
+.bg-0, .bg-1, .bg-2 {
+    background-color: #000079;
+}
+
+.bg-3, .bg-23 {
+    background-color: #0000be;
+}
+
+.bg-4, .bg-22 {
+    background-color: #0000FF;
+}
+
+.bg-5, .bg-21 {
+    background-color: #5108ff;
+}
+
+.bg-6, .bg-20 {
+    background-color: #8f03ff;
+}
+
+.bg-7, .bg-19 {
+    background-color: #ff05f8;
+}
+
+.bg-8, .bg-18 {
+    background-color: #ff0458;
+}
+
+.bg-9, .bg-17 {
+    background-color: #ff2507;
+}
+
+.bg-10, .bg-16 {
+    background-color: #ff7403;
+}
+
+.bg-11, .bg-15 {
+    background-color: #ffaa00;
+}
+
+.bg-12, .bg-13, .bg-14 {
+    background-color: #fff604;
+}
+
 #container {
     z-index: 1;
 }
