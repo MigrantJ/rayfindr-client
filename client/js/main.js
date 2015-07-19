@@ -129,8 +129,8 @@ function ajaxCall() {
         lat: lat,
         lon: lon,
         year: day.year(),
-        month: day.month(),
-        day: day.day(),
+        month: day.month() + 1,  //Zero Indexed
+        day: day.date(),
         hour: day.hour(),
         minute: day.minute(),
         boundLatMin: bounds.getSouth(),
