@@ -65,7 +65,11 @@ function handleNoGeolocation(errorFlag) {
     }
 
     //default location: Code Fellows
-    buildMap([47.6235, -122.3360]);
+    pos = {
+        lat: 47.6235,
+        lon: -122.3360
+    };
+    buildMap();
 }
 
 function buildMap() {
